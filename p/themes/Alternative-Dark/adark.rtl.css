@@ -80,13 +80,11 @@ textarea {
 }
 
 input, select, textarea {
-	padding: 5px;
+	padding: 7px;
 	background: var(--background-color-light);
 	color: var(--font-color-middle);
 	border: 1px solid var(--border-color-middle);
 	border-radius: 3px;
-	min-height: 25px;
-	line-height: 25px;
 	vertical-align: middle;
 }
 
@@ -95,10 +93,6 @@ select:hover,
 textarea:hover,
 label:hover {
 	color: var(--font-color-light);
-}
-
-select {
-	padding: 10px 0px 9px;
 }
 
 option {
@@ -129,8 +123,7 @@ table {
 	border-collapse: collapse;
 }
 
-tr, th, td {
-	padding: 0.5em;
+th, td {
 	border: 1px solid var(--border-color-dark);
 }
 
@@ -159,7 +152,6 @@ form th {
 
 .form-group .group-name {
 	padding: 10px 0;
-	text-align: left;
 }
 
 .form-group .group-controls {
@@ -215,7 +207,7 @@ form th {
 	border-radius: 3px;
 	min-height: 37px;
 	min-width: 15px;
-	line-height: 25px;
+	line-height: 1.7;
 	vertical-align: middle;
 	cursor: pointer;
 	overflow: hidden;
@@ -223,7 +215,6 @@ form th {
 
 a.btn {
 	min-height: 25px;
-	line-height: 25px;
 }
 
 .btn:hover {
@@ -291,8 +282,7 @@ a.btn {
 /*=== Navigation */
 .nav-list .nav-header,
 .nav-list .item {
-	height: 2.5em;
-	line-height: 2.5em;
+	line-height: 2.5;
 	color: var(--font-color-light);
 	font-size: 0.9rem;
 }
@@ -351,7 +341,7 @@ a.btn {
 /*=== Dropdown */
 .dropdown-menu {
 	margin: 5px 0 0;
-	padding: 5px 0;
+	padding: 0.5rem 0 0.25rem 0;
 	background: var(--background-color-active);
 	font-size: 0.8rem;
 	border: 2px solid var(--background-color-light);
@@ -363,23 +353,35 @@ a.btn {
 	border-color: var(--border-color-dark);
 }
 
-.dropdown-header {
-	padding: 0 5px 5px;
+.dropdown-header,
+.dropdown-section .dropdown-section-title {
+	padding: 0.25rem 1rem 0.25rem 0.5rem;
 	color: var(--font-color-middle);
 	font-weight: bold;
 	text-align: right;
 }
 
-.dropdown-menu > .item > a,
-.dropdown-menu > .item > span,
-.dropdown-menu > .item > .as-link {
+.dropdown-menu .item > a,
+.dropdown-menu .item > span,
+.dropdown-menu .item > .as-link {
 	padding: 0 22px;
-	line-height: 2.5em;
+	line-height: 2.5;
 	font-size: 0.8rem;
 }
 
-.dropdown-menu > .item > a:hover,
-.dropdown-menu > .item > button:hover {
+.dropdown-menu .dropdown-section .item > a,
+.dropdown-menu .dropdown-section .item > span,
+.dropdown-menu .dropdown-section .item > .as-link {
+	padding-right: 2rem;
+}
+
+.dropdown-menu .dropdown-section .item:last-child {
+	margin-bottom: 0.5rem;
+}
+
+.dropdown-menu .item > a:hover,
+.dropdown-menu .item > button:hover,
+.dropdown-menu .item > label:hover:not(.noHover) {
 	background: var(--background-color-hover);
 	color: var(--font-color-light);
 }
@@ -397,6 +399,7 @@ a.btn {
 }
 
 .item ~ .dropdown-header,
+.dropdown-section ~ .dropdown-section,
 .item.separator {
 	border-top-color: var(--border-color-dark);
 }
@@ -477,7 +480,7 @@ kbd {
 
 .box .box-content .item {
 	font-size: 0.9rem;
-	line-height: 2.5em;
+	line-height: 2.5;
 }
 
 /*=== Tree */
@@ -489,7 +492,7 @@ kbd {
 	position: relative;
 	padding: 0 10px;
 	background: var(--background-color-light);
-	line-height: 2.5rem;
+	line-height: 2.5;
 	font-size: 1rem;
 }
 
@@ -532,8 +535,6 @@ kbd {
 }
 
 .tree-folder-items > .item {
-	padding: 0 10px;
-	line-height: 2.5rem;
 	font-size: 0.8rem;
 }
 
@@ -598,7 +599,7 @@ kbd {
 /*=== Aside main page (categories) */
 .aside_feed .category .title:not([data-unread="0"])::after {
 	padding: 0 10px;
-	line-height: 1.5rem;
+	line-height: 1.5;
 }
 
 .aside.aside_feed .category .title:not([data-unread="0"])::after,
@@ -697,7 +698,7 @@ kbd {
 }
 
 #new-article > a {
-	line-height: 3em;
+	padding: 0.75rem;
 	color: var(--font-color-light);
 	font-weight: bold;
 }
@@ -711,10 +712,14 @@ kbd {
 .day {
 	padding: 0 10px;
 	font-weight: bold;
-	line-height: 3em;
+	line-height: 3;
 	background: var(--background-color-dark);
 	color: var(--font-color-light);
 	border-top: 1px solid var(--border-color-dark);
+}
+
+.day span {
+	line-height: 1.5;
 }
 
 #new-article + .day {
@@ -746,7 +751,7 @@ kbd {
 	border-right-style: solid;
 }
 
-.flux:hover {
+.flux .flux_header:hover {
 	background: var(--background-color-hover) !important;
 }
 
@@ -799,10 +804,6 @@ kbd {
 
 .flux_header .title {
 	font-size: 0.9rem;
-}
-
-.flux .website .favicon {
-	padding: 5px;
 }
 
 .flux .website a:hover .favicon,
@@ -923,15 +924,6 @@ kbd {
 	color: var(--font-color-contrast);
 }
 
-.notification a.close {
-	padding: 0 15px;
-	line-height: 3em;
-}
-
-.notification#actualizeProgress {
-	line-height: 2em;
-}
-
 /*=== "Load more" part */
 #bigMarkAsRead {
 	background: var(--background-color-dark);
@@ -954,7 +946,7 @@ kbd {
 	margin: 0;
 	background: var(--background-color-light);
 	text-align: center;
-	line-height: 3em;
+	line-height: 3;
 	table-layout: fixed;
 }
 
@@ -1021,11 +1013,6 @@ kbd {
 	text-shadow: none;
 }
 
-.box.category .item.feed {
-	padding: 2px 10px;
-	font-size: 0.8rem;
-}
-
 /*=== Slider */
 #slider {
 	background: var(--background-color-dark);
@@ -1084,7 +1071,6 @@ kbd {
 @media (max-width: 840px) {
 	.form-group .group-name {
 		padding-bottom: 0;
-		text-align: right;
 	}
 
 	.aside {
