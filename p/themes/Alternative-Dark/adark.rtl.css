@@ -280,11 +280,15 @@ a.btn {
 }
 
 /*=== Navigation */
-.nav-list .nav-header,
-.nav-list .item {
-	line-height: 2.5;
+.nav-list {
 	color: var(--font-color-light);
 	font-size: 0.9rem;
+}
+
+.nav-list .item,
+.nav-list .item.nav-header {
+	min-height: 2.5em;
+	line-height: 2.5;
 }
 
 .nav-list .item a {
@@ -302,7 +306,7 @@ a.btn {
 }
 
 .nav-list .item > a {
-	padding: 0 10px;
+	padding: 0 1rem;
 }
 
 .nav-list a:hover {
@@ -310,7 +314,7 @@ a.btn {
 }
 
 .nav-list .nav-header {
-	padding: 0 10px;
+	padding: 0 1rem;
 	color: var(--font-color-middle);
 	font-weight: bold;
 }
@@ -348,7 +352,7 @@ a.btn {
 .dropdown-menu .item > .as-link {
 	padding: 0 22px;
 	line-height: 2.5;
-	font-size: 0.8rem;
+	font-size: inherit;
 }
 
 .dropdown-menu .dropdown-section .item > a,
@@ -388,8 +392,6 @@ a.btn {
 
 /*=== Alerts */
 .alert {
-	margin: 15px auto;
-	padding: 10px 15px;
 	background-color: var(--background-color-dark);
 	color: var(--font-color-middle);
 	font-size: 0.9em;
@@ -540,19 +542,17 @@ kbd {
 }
 
 .header > .item {
-	padding: 10px;
 	border-bottom: 1px solid var(--border-color-dark);
 	vertical-align: middle;
 	text-align: center;
 }
 
-.header > .item.title {
-	width: 230px;
+.header > .item.title .logo {
+	filter: grayscale(100%) brightness(2.5);
 }
 
-.header > .item.title .logo {
-	margin: 0.5em 0;
-	filter: grayscale(100%) brightness(2.5);
+.header > .item.title a:hover .logo {
+	filter: grayscale(100%) brightness(2.8);
 }
 
 .header > .item.search input {
@@ -586,7 +586,8 @@ kbd {
 
 .aside.aside_feed .category .title:not([data-unread="0"])::after,
 .aside.aside_feed .feed .item-title:not([data-unread="0"])::after,
-.global .box.category .title:not([data-unread="0"])::after {
+.global .box.category .title:not([data-unread="0"])::after,
+.global .feed .item-title:not([data-unread="0"])::after {
 	background-color: var(--background-color-dark);
 	color: var(--font-color-middle);
 }
@@ -993,6 +994,10 @@ kbd {
 	top: 5px; left: 10px;
 	font-weight: bold;
 	text-shadow: none;
+}
+
+#stream.global .feed .item-title:not([data-unread="0"])::after {
+	margin: 1rem 0px 0px;
 }
 
 /*=== Slider */

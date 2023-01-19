@@ -76,9 +76,8 @@ $color_hover:	#fff;
 }
 
 %nav-list {
-	height: 2.5em;
+	min-height: 2.5em;
 	line-height: 2.5;
-	font-size: 0.9rem;
 }
 
 %dropdown {
@@ -89,7 +88,6 @@ $color_hover:	#fff;
 }
 
 %after {
-	content: "";
 	display: block;
 	clear: both;
 }
@@ -106,7 +104,7 @@ body {
 }
 
 a {
-	color: var(--color-nav-lighter);
+	color: var(--color-text-nav);
 	outline: none;
 
 	&.btn {
@@ -339,19 +337,21 @@ form {
 }
 
 .nav-list {
-	.nav-header {
-
-		@extend %nav-list;
-		padding: 0 1rem;
-		font-weight: bold;
-		background-color: var(--color-background-aside);
-		color: var(--color-text-light);
-		cursor: default;
-	}
+	font-size: 0.9rem;
 
 	.item {
 
 		@extend %nav-list;
+
+		.nav-header {
+
+			@extend %nav-list;
+			padding: 0 1rem;
+			font-weight: bold;
+			background-color: var(--color-background-aside);
+			color: var(--color-text-light);
+			cursor: default;
+		}
 
 		a:hover {
 			background-color: var(--color-background-nav-darker);
@@ -429,17 +429,13 @@ form {
 		}
 	}
 
-	&::after {
-		content: none;
-	}
-
 	> {
 		.item {
 
 			@extend %dropdown;
 			padding: 0 0 0 0.5rem;
 
-			> a,
+			a,
 			> span,
 			> .as-link,
 			button {
@@ -489,8 +485,7 @@ form {
 }
 
 .alert {
-	margin: 5px auto;
-	padding: 10px 15px;
+	margin: 0.25rem auto;
 	background-color: var(--color-background-light);
 	color: var(--color-text-light-darker);
 	font-size: 0.9em;
@@ -627,7 +622,6 @@ form {
 		.item {
 			padding: 0 10px;
 			font-size: 0.9rem;
-			line-height: 2.5;
 
 			.configure {
 				.icon {
@@ -728,6 +722,16 @@ form {
 			@extend %aside-width;
 			position: absolute;
 			text-align: center;
+
+			a {
+				padding: 0 1rem;
+
+				&:hover {
+					.logo {
+						filter: grayscale(100%) brightness(100) opacity(90%);
+					}
+				}
+			}
 
 			.logo {
 				display: inline-block;
@@ -931,6 +935,7 @@ form {
 	width: 100%;
 	font-size: 0;
 	background-color: var(--color-background-nav);
+	text-align: left;
 	position: sticky;
 	top: 0;
 	z-index: 90;

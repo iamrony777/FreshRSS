@@ -261,11 +261,14 @@ a.btn {
 }
 
 /*=== Navigation */
-.nav-list .nav-header,
-.nav-list .item {
-	height: 2.5em;
-	line-height: 2.5em;
+.nav-list {
 	font-size: 0.9rem;
+}
+
+.nav-list .item,
+.nav-list .item.nav-header {
+	min-height: 2.5em;
+	line-height: 2.5;
 }
 
 .nav-list .item a:hover {
@@ -282,7 +285,7 @@ a.btn {
 }
 
 .nav-list .item > a {
-	padding: 0 10px;
+	padding: 0 1rem;
 }
 
 .nav-list a:hover {
@@ -290,7 +293,7 @@ a.btn {
 }
 
 .nav-list .nav-header {
-	padding: 0 10px;
+	padding: 0 1rem;
 	font-weight: bold;
 	background: #111;
 	border-bottom: 1px solid #333;
@@ -329,7 +332,7 @@ a.btn {
 .dropdown-menu .item > .as-link {
 	padding: 0 22px;
 	line-height: 2.5em;
-	font-size: 0.8rem;
+	font-size: inherit;
 }
 
 .dropdown-menu .dropdown-section .item > a,
@@ -369,8 +372,6 @@ a.btn {
 
 /*=== Alerts */
 .alert {
-	margin: 15px auto;
-	padding: 10px 15px;
 	background: #111;
 	color: #aaa;
 	font-size: 0.9em;
@@ -529,18 +530,17 @@ a.btn {
 /*===============*/
 /*=== Header */
 .header > .item {
-	padding: 10px;
 	vertical-align: middle;
 	text-align: center;
 	border-bottom: 1px solid #333;
 }
 
-.header > .item.title {
-	width: 230px;
-}
-
 .header > .item.title .logo {
 	filter: grayscale(60%) brightness(1.1);
+}
+
+.header > .item.title a:hover .logo {
+	filter: grayscale(60%) brightness(1.5);
 }
 
 .header > .item.search input {
@@ -912,6 +912,11 @@ a.btn {
 	font-weight: bold;
 	box-shadow: none;
 	text-shadow: none;
+}
+
+#stream.global .feed .item-title:not([data-unread="0"])::after {
+	background-color: #171717;
+	margin-top: 1rem;
 }
 
 /*=== Panel */

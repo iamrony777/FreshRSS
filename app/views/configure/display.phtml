@@ -60,7 +60,7 @@
 							data-leave-validation="<?= (FreshRSS_Context::$user_conf->theme === $theme['id']) ? 1 : 0 ?>" />
 						<li class="slide-container">
 							<div class="slide">
-								<img src="<?= Minz_Url::display('/themes/' . $theme['id'] . '/thumbs/original.png') ?>" />
+								<img src="<?= Minz_Url::display('/themes/' . $theme['id'] . '/thumbs/original.png') ?>" loading="lazy" />
 							</div>
 							<div class="nav">
 								<?php if ($i !== 1) {?>
@@ -71,8 +71,18 @@
 								<?php } ?>
 							</div>
 							<div class="properties">
-								<div><?= sprintf('%s — %s %s', $theme['name'], _t('gen.short.by_author'), $theme['author']) ?></div>
-								<div><?= $theme['description'] ?></div>
+								<div>
+									<?php if (!empty($theme['deprecated'])) { ?>
+										<span class="deprecated error"><?= _t('conf.display.theme.deprecated') ?>:</span>
+									<?php } ?>
+									<?= sprintf('%s — %s %s', $theme['name'], _t('gen.short.by_author'), $theme['author']) ?>
+								</div>
+								<div>
+									<?php if (!empty($theme['deprecated'])) { ?>
+										<span class="deprecated"><?= _t('conf.display.theme.deprecated.description') ?></span><br />
+									<?php } ?>
+									<?= $theme['description'] ?>
+								</div>
 								<div class="page-number"><?= sprintf('%d/%d', $i, $slides) ?></div>
 							</div>
 						</li>
@@ -92,6 +102,16 @@
 						</li>
 					<?php }?>
 				</ul>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="group-name" for="darkMode"><?= _t('conf.display.darkMode') ?></label>
+			<div class="group-controls">
+				<select name="darkMode" id="darkMode" data-leave-validation="<?= FreshRSS_Context::$user_conf->darkMode ?>">
+					<option value="no"<?= FreshRSS_Context::$user_conf->darkMode === 'no' ? ' selected' : '' ?>>No</option>
+					<option value="auto"<?= FreshRSS_Context::$user_conf->darkMode === 'auto' ? ' selected' : '' ?>>Auto</option>
+				</select>
 			</div>
 		</div>
 

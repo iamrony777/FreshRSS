@@ -218,7 +218,6 @@ a.btn {
 }
 
 .dropdown-menu::after {
-	content: "";
 	position: absolute;
 	top: -6px;
 	right: 13px;
@@ -264,8 +263,6 @@ a.btn {
 
 /*=== Alerts */
 .alert {
-	margin: 15px auto;
-	padding: 10px 15px;
 	font-size: 0.9em;
 }
 
@@ -394,13 +391,8 @@ a.btn {
 }
 
 .header > .item {
-	padding: 10px;
 	vertical-align: middle;
 	text-align: center;
-}
-
-.header > .item.title {
-	width: 230px;
 }
 
 .header > .item.title h1 {

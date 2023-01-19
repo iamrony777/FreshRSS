@@ -57,6 +57,11 @@ function classAutoloader($class) {
 		$base_dir = LIB_PATH . '/phpgt/cssxpath/src/';
 		$relative_class_name = substr($class, strlen($prefix));
 		require $base_dir . str_replace('\\', '/', $relative_class_name) . '.php';
+	} elseif (str_starts_with($class, 'marienfressinaud\\LibOpml\\')) {
+		$prefix = 'marienfressinaud\\LibOpml\\';
+		$base_dir = LIB_PATH . '/marienfressinaud/lib_opml/src/LibOpml/';
+		$relative_class_name = substr($class, strlen($prefix));
+		require $base_dir . str_replace('\\', '/', $relative_class_name) . '.php';
 	} elseif (str_starts_with($class, 'PHPMailer\\PHPMailer\\')) {
 		$prefix = 'PHPMailer\\PHPMailer\\';
 		$base_dir = LIB_PATH . '/phpmailer/phpmailer/src/';
@@ -221,6 +226,31 @@ function html_only_entity_decode($text): string {
 		));
 	}
 	return $text == '' ? '' : strtr($text, $htmlEntitiesOnly);
+}
+
+/**
+ * Remove passwords in FreshRSS logs.
+ * See also ../cli/sensitive-log.sh for Web server logs.
+ * @param array<string,mixed>|string $log
+ * @return array<string,mixed>|string
+ */
+function sensitive_log($log) {
+	if (is_array($log)) {
+		foreach ($log as $k => $v) {
+			if (in_array($k, ['api_key', 'Passwd', 'T'])) {
+				$log[$k] = '██';
+			} else {
+				$log[$k] = sensitive_log($v);
+			}
+		}
+	} elseif (is_string($log)) {
+		$log = preg_replace([
+				'/\b(auth=.*?\/)[^&]+/i',
+				'/\b(Passwd=)[^&]+/i',
+				'/\b(Authorization)[^&]+/i',
+			], '$1█', $log);
+	}
+	return $log;
 }
 
 /**

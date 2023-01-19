@@ -317,7 +317,6 @@ button.as-link:hover,
 button.as-link:active {
 	background: transparent;
 	color: inherit;
-	font-size: 1.1rem;
 	border: none;
 	cursor: pointer;
 	text-align: right;
@@ -560,6 +559,10 @@ input[type="checkbox"]:focus-visible {
 }
 
 /*=== Navigation */
+.nav-list {
+	padding-bottom: 3rem;
+}
+
 .nav-list .nav-header,
 .nav-list .item {
 	display: block;
@@ -712,6 +715,8 @@ input[type="checkbox"]:focus-visible {
 
 /*=== Alerts */
 .alert {
+	margin: 1rem auto;
+	padding: 0.75rem 1rem;
 	display: block;
 	width: 90%;
 }
@@ -1006,7 +1011,7 @@ li.drag-hover {
 .header {
 	display: table;
 	width: 100%;
-	height: calc(2rem + 2 * var(--frss-padding-top-bottom));
+	height: calc(2.5rem + 2 * var(--frss-padding-top-bottom));
 	table-layout: fixed;
 }
 
@@ -1017,7 +1022,8 @@ li.drag-hover {
 }
 
 .header > .item.title {
-	width: 250px;
+	width: 300px;
+	text-align: center;
 	white-space: nowrap;
 }
 
@@ -1025,10 +1031,20 @@ li.drag-hover {
 	display: inline-block;
 }
 
+.header > .item.title a {
+	padding: 0.25rem 1rem;
+	display: inline-block;
+}
+
 .header > .item.title .logo {
 	display: inline-block;
 	height: 2rem;
 	vertical-align: middle;
+}
+
+.header > .item.title a:hover .logo {
+	filter: brightness(1.4);
+	transition: filter 0.1s linear;
 }
 
 .header > .item.configure {
@@ -1044,7 +1060,7 @@ input[type="search"] {
 	background: inherit;
 	display: table;
 	width: 100%;
-	height: calc(100vh - (calc(2rem + 2 * var(--frss-padding-top-bottom))));
+	height: calc(100vh - (calc(2.5rem + 2 * var(--frss-padding-top-bottom) + 1px)));
 	table-layout: fixed;
 }
 
@@ -1241,6 +1257,7 @@ a.website:hover .favicon {
 	color: var(--frss-font-color-grey-dark);
 	font-size: 0.9rem;
 	font-weight: normal;
+	overflow: hidden;
 	text-overflow: ellipsis;
 	-webkit-line-clamp: 2;
 	-webkit-box-orient: vertical;
@@ -1796,9 +1813,14 @@ input:checked + .slide-container .properties {
 
 .item.share.error a::after,
 .category .title.error::before,
-.item.feed.error .item-title::before {
+.item.feed.error .item-title::before,
+.properties .error::before {
 	content: " ⚠ ";
 	color: var(--frss-font-color-error);
+}
+
+.deprecated {
+	font-weight: bold;
 }
 
 .feed.item.error.active .item-title::before {
@@ -1856,6 +1878,26 @@ input:checked + .slide-container .properties {
 
 .feed .item-title:not([data-unread="0"])::after {
 	margin: 1em 0 0 0;
+}
+
+#stream.global .feed {
+	position: relative;
+}
+
+#stream.global .feed .item-title:not([data-unread="0"])::after {
+	margin: 0.5rem 0px 0px;
+	padding: 5px 10px;
+	min-width: 20px;
+	display: block;
+	content: attr(data-unread);
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	text-align: center;
+	font-size: 0.75rem;
+	border-radius: 12px;
+	line-height: 1;
+	font-weight: initial;
 }
 
 .feed.active .item-title:not([data-unread="0"])::after {
@@ -1963,6 +2005,11 @@ input:checked + .slide-container .properties {
 
 	.header > .item {
 		padding: 5px;
+	}
+
+	.header > .item.title {
+		width: 75%;
+		text-align: right;
 	}
 
 	.header > .item.title .logo {
@@ -2152,6 +2199,7 @@ input:checked + .slide-container .properties {
 	}
 
 	.notification {
+		padding: 0.75rem;
 		top: 0;
 		right: 0;
 		left: 0;
