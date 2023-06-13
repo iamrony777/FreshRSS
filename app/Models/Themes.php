@@ -1,18 +1,23 @@
 <?php
 
 class FreshRSS_Themes extends Minz_Model {
+	/** @var string */
 	private static $themesUrl = '/themes/';
+	/** @var string */
 	private static $defaultIconsUrl = '/themes/icons/';
+	/** @var string */
 	public static $defaultTheme = 'Origine';
 
-	public static function getList() {
+	/** @return array<string> */
+	public static function getList(): array {
 		return array_values(array_diff(
-			scandir(PUBLIC_PATH . self::$themesUrl),
+			scandir(PUBLIC_PATH . self::$themesUrl) ?: [],
 			array('..', '.')
 		));
 	}
 
-	public static function get() {
+	/** @return array<string,array{'id':string,'name':string,'author':string,'description':string,'version':float|string,'files':array<string>,'theme-color'?:string|array{'dark'?:string,'light'?:string,'default'?:string}}> */
+	public static function get(): array {
 		$themes_list = self::getList();
 		$list = array();
 		foreach ($themes_list as $theme_dir) {
@@ -24,12 +29,15 @@ class FreshRSS_Themes extends Minz_Model {
 		return $list;
 	}
 
-	public static function get_infos($theme_id) {
+	/**
+	 * @return false|array{'id':string,'name':string,'author':string,'description':string,'version':float|string,'files':array<string>,'theme-color'?:string|array{'dark'?:string,'light'?:string,'default'?:string}}
+	 */
+	public static function get_infos(string $theme_id) {
 		$theme_dir = PUBLIC_PATH . self::$themesUrl . $theme_id;
 		if (is_dir($theme_dir)) {
 			$json_filename = $theme_dir . '/metadata.json';
 			if (file_exists($json_filename)) {
-				$content = file_get_contents($json_filename);
+				$content = file_get_contents($json_filename) ?: '';
 				$res = json_decode($content, true);
 				if ($res &&
 						!empty($res['name']) &&
@@ -43,10 +51,15 @@ class FreshRSS_Themes extends Minz_Model {
 		return false;
 	}
 
+	/** @var string */
 	private static $themeIconsUrl;
+	/** @var array<string,int> */
 	private static $themeIcons;
 
-	public static function load($theme_id) {
+	/**
+	 * @return false|array{'id':string,'name':string,'author':string,'description':string,'version':float|string,'files':array<string>,'theme-color'?:string|array{'dark'?:string,'light'?:string,'default'?:string}}
+	 */
+	public static function load(string $theme_id) {
 		$infos = self::get_infos($theme_id);
 		if (!$infos) {
 			if ($theme_id !== self::$defaultTheme) {	//Fall-back to default theme
@@ -62,20 +75,20 @@ class FreshRSS_Themes extends Minz_Model {
 		}
 		self::$themeIconsUrl = self::$themesUrl . $theme_id . '/icons/';
 		self::$themeIcons = is_dir(PUBLIC_PATH . self::$themeIconsUrl) ? array_fill_keys(array_diff(
-			scandir(PUBLIC_PATH . self::$themeIconsUrl),
+			scandir(PUBLIC_PATH . self::$themeIconsUrl) ?: [],
 			array('..', '.')
 		), 1) : array();
 		return $infos;
 	}
 
-	public static function title($name) {
+	public static function title(string $name): string {
 		static $titles = [
 			'opml-dyn' => 'sub.category.dynamic_opml',
 		];
 		return $titles[$name] ?? '';
 	}
 
-	public static function alt($name) {
+	public static function alt(string $name): string {
 		static $alts = array(
 			'add' => '➕',	//✚
 			'all' => '☰',
@@ -119,7 +132,7 @@ class FreshRSS_Themes extends Minz_Model {
 			'view-reader' => '📜',
 			'warning' => '⚠️',	//△
 		);
-		return isset($name) ? $alts[$name] : '';
+		return $alts[$name] ?? '';
 	}
 
 	// TODO: Change for enum in PHP 8.1+

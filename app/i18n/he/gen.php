@@ -150,6 +150,7 @@ return array(
 		'it' => 'Italiano',	// IGNORE
 		'ja' => '日本語',	// IGNORE
 		'ko' => '한국어',	// IGNORE
+		'lv' => 'Latviešu',	// IGNORE
 		'nl' => 'Nederlands',	// IGNORE
 		'oc' => 'Occitan',	// IGNORE
 		'pl' => 'Polski',	// IGNORE
@@ -195,6 +196,7 @@ return array(
 		'archiveORG' => 'archive.org',	// IGNORE
 		'archivePH' => 'archive.ph',	// IGNORE
 		'blogotext' => 'Blogotext',	// IGNORE
+		'buffer' => 'Buffer',	// IGNORE
 		'clipboard' => 'Clipboard',	// TODO
 		'diaspora' => 'Diaspora*',	// IGNORE
 		'email' => 'דואר אלקטרוני',

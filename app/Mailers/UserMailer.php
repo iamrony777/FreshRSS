@@ -7,10 +7,11 @@ class FreshRSS_User_Mailer extends Minz_Mailer {
 
 	/**
 	 * @var FreshRSS_View
+	 * @phpstan-ignore-next-line
 	 */
 	protected $view;
 
-	public function send_email_need_validation($username, $user_config) {
+	public function send_email_need_validation(string $username, FreshRSS_UserConfiguration $user_config): bool {
 		Minz_Translate::reset($user_config->language);
 
 		$this->view->_path('user_mailer/email_need_validation.txt.php');
