@@ -159,6 +159,10 @@ return array(
 	'system' => array(
 		'_' => 'Configuración del sistema',
 		'auto-update-url' => 'URL de auto-actualización',
+		'base-url' => array(
+			'_' => 'Base URL',	// TODO
+			'recommendation' => 'Automatic recommendation: <kbd>%s</kbd>',	// TODO
+		),
 		'cookie-duration' => array(
 			'help' => 'en segundos',
 			'number' => 'Duración para mantenerse conectado',
@@ -183,20 +187,33 @@ return array(
 			),
 			'title' => 'Formulario de registro del usuario',
 		),
+		'sensitive-parameter' => 'Sensitive parameter. Edit manually in <kbd>./data/config.php</kbd>',	// TODO
 		'tos' => array(
 			'disabled' => 'no se proporciona',
 			'enabled' => '<a href="./?a=tos">está activado</a>',
 			'help' => 'Cómo <a href="https://freshrss.github.io/FreshRSS/en/admins/12_User_management.html#enable-terms-of-service-tos" target="_blank">activar las Condiciones de servicio</a>',
 		),
+		'websub' => array(
+			'help' => 'About <a href="https://freshrss.github.io/FreshRSS/en/users/WebSub.html" target="_blank">WebSub</a>',	// TODO
+		),
 	),
 	'update' => array(
 		'_' => 'Actualizar sistema',
 		'apply' => 'Aplicar',
+		'changelog' => 'Changelog',	// TODO
 		'check' => 'Buscar actualizaciones',
-		'current_version' => 'Dispones de la versión %s de FreshRSS.',
-		'last' => 'Última comprobación: %s',
+		'copiedFromURL' => 'update.php copied from %s to ./data',	// TODO
+		'current_version' => 'Dispones de la versión',
+		'last' => 'Última comprobación',
+		'loading' => 'Updating…',	// TODO
 		'none' => 'No hay actualizaciones disponibles',
+		'releaseChannel' => array(
+			'_' => 'Release channel',	// TODO
+			'edge' => 'Rolling release (“edge”)',	// TODO
+			'latest' => 'Stable release (“latest”)',	// TODO
+		),
 		'title' => 'Actualizar sistema',
+		'viaGit' => 'Update via git and Github.com started',	// TODO
 	),
 	'user' => array(
 		'admin' => 'Administrador',

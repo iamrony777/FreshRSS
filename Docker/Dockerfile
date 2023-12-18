@@ -1,4 +1,4 @@
-FROM debian:11-slim
+FROM debian:12-slim
 
 ENV TZ UTC
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -20,7 +20,6 @@ COPY . /var/www/FreshRSS
 COPY ./Docker/*.Apache.conf /etc/apache2/sites-available/
 
 ARG FRESHRSS_VERSION
-ARG SOURCE_BRANCH
 ARG SOURCE_COMMIT
 
 LABEL \
@@ -28,18 +27,19 @@ LABEL \
 	org.opencontainers.image.description="A self-hosted RSS feed aggregator" \
 	org.opencontainers.image.documentation="https://freshrss.github.io/FreshRSS/" \
 	org.opencontainers.image.licenses="AGPL-3.0" \
-	org.opencontainers.image.revision="${SOURCE_BRANCH}.${SOURCE_COMMIT}" \
+	org.opencontainers.image.revision="${SOURCE_COMMIT}" \
 	org.opencontainers.image.source="https://github.com/FreshRSS/FreshRSS" \
 	org.opencontainers.image.title="FreshRSS" \
 	org.opencontainers.image.url="https://freshrss.org/" \
 	org.opencontainers.image.vendor="FreshRSS" \
 	org.opencontainers.image.version="$FRESHRSS_VERSION"
 
-RUN a2dismod -f alias autoindex negotiation status && \
-	a2enmod deflate expires headers mime remoteip setenvif && \
-	a2disconf '*' && \
-	a2dissite '*' && \
-	a2ensite 'FreshRSS*'
+RUN a2dismod -q -f alias autoindex negotiation status && \
+	a2dismod -q auth_openidc && \
+	a2enmod -q deflate expires headers mime remoteip setenvif && \
+	a2disconf -q '*' && \
+	a2dissite -q '*' && \
+	a2ensite -q 'FreshRSS*'
 
 RUN sed -r -i "/^\s*(CustomLog|ErrorLog|Listen) /s/^/#/" /etc/apache2/apache2.conf && \
 	sed -r -i "/^\s*Listen /s/^/#/" /etc/apache2/ports.conf && \
@@ -57,6 +57,7 @@ ENV DATA_PATH ''
 ENV FRESHRSS_ENV ''
 ENV LISTEN ''
 ENV OIDC_ENABLED ''
+ENV TRUSTED_PROXY ''
 
 ENTRYPOINT ["./Docker/entrypoint.sh"]
 

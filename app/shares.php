@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /*
  * This is a configuration file. You shouldn’t modify it unless you know what
@@ -140,6 +141,13 @@ return [
 		'url' => '~URL~/?share/~LINK~',
 		'transform' => ['urlencode'],
 		'help' => 'https://movim.eu/',
+		'form' => 'advanced',
+		'method' => 'GET',
+	],
+	'omnivore' => [
+		'url' => '~URL~/api/save?url=~LINK~',
+		'transform' => ['urlencode'],
+		'help' => 'https://omnivore.app/',
 		'form' => 'advanced',
 		'method' => 'GET',
 	],

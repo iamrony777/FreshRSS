@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 class FreshRSS_FormAuth {
 	public static function checkCredentials(string $username, string $hash, string $nonce, string $challenge): bool {
@@ -17,7 +18,7 @@ class FreshRSS_FormAuth {
 	public static function getCredentialsFromCookie(): array {
 		$token = Minz_Session::getLongTermCookie('FreshRSS_login');
 		if (!ctype_alnum($token)) {
-			return array();
+			return [];
 		}
 
 		$token_file = DATA_PATH . '/tokens/' . $token . '.txt';
@@ -27,7 +28,7 @@ class FreshRSS_FormAuth {
 		if ($mtime + $cookie_duration < time()) {
 			// Token has expired (> cookie_duration) or does not exist.
 			@unlink($token_file);
-			return array();
+			return [];
 		}
 
 		$credentials = @file_get_contents($token_file);

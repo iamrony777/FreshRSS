@@ -134,6 +134,7 @@ return array(
 			'request_failed' => 'Richiesta fallita, probabilmente a causa di problemi di connessione',
 			'title_new_articles' => 'Feed RSS Reader: nuovi articoli!',
 		),
+		'labels_empty' => 'No labels',	// TODO
 		'new_article' => 'Sono disponibili nuovi articoli, clicca qui per caricarli.',
 		'should_be_activated' => 'JavaScript deve essere abilitato',
 	),
@@ -144,8 +145,10 @@ return array(
 		'en' => 'English',	// IGNORE
 		'en-us' => 'English (United States)',	// IGNORE
 		'es' => 'Español',	// IGNORE
+		'fa' => 'فارسی',	// IGNORE
 		'fr' => 'Français',	// IGNORE
 		'he' => 'עברית',	// IGNORE
+		'hu' => 'Magyar',	// IGNORE
 		'id' => 'Bahasa Indonesia',	// IGNORE
 		'it' => 'Italiano',	// IGNORE
 		'ja' => '日本語',	// IGNORE
@@ -209,6 +212,7 @@ return array(
 		'linkedin' => 'LinkedIn',	// IGNORE
 		'mastodon' => 'Mastodon',	// IGNORE
 		'movim' => 'Movim',	// IGNORE
+		'omnivore' => 'Omnivore',	// IGNORE
 		'pinboard' => 'Pinboard',	// IGNORE
 		'pinterest' => 'Pinterest',	// IGNORE
 		'pocket' => 'Pocket',	// IGNORE

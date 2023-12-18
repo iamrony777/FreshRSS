@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 require(__DIR__ . '/../../constants.php');
 require(LIB_PATH . '/lib_rss.php');	//Includes class autoloader
 
@@ -31,6 +32,7 @@ if ($canonical === false) {
 		header('Connection: close');
 		exit(isset($_REQUEST['hub_challenge']) ? $_REQUEST['hub_challenge'] : '');
 	}
+	// https://github.com/w3c/websub/issues/106 , https://w3c.github.io/websub/#content-distribution
 	header('HTTP/1.1 410 Gone');
 	Minz_Log::warning('Warning: Feed key not found!: ' . $key, PSHB_LOG);
 	die('Feed key not found!');
@@ -131,8 +133,11 @@ foreach ($users as $userFilename) {
 		Minz_ExtensionManager::enableByList(FreshRSS_Context::$user_conf->extensions_enabled, 'user');
 		Minz_Translate::reset(FreshRSS_Context::$user_conf->language);
 
-		list($updated_feeds, $feed, $nb_new_articles) = FreshRSS_feed_Controller::actualizeFeed(0, $self, false, $simplePie);
-		if ($updated_feeds > 0 || $feed != false) {
+		[$updated_feeds, , $nb_new_articles] = FreshRSS_feed_Controller::actualizeFeeds(null, $self, null, $simplePie);
+		if ($nb_new_articles > 0) {
+			FreshRSS_feed_Controller::commitNewEntries();
+		}
+		if ($updated_feeds > 0) {
 			$nb++;
 		} else {
 			Minz_Log::warning('Warning: User ' . $username . ' does not subscribe anymore to ' . $self, PSHB_LOG);

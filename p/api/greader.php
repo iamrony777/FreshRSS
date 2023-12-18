@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
 == Description ==
 Server-side API compatible with Google Reader API layer 2
@@ -325,7 +327,10 @@ final class GReaderAPI {
 		$importService = new FreshRSS_Import_Service($user);
 		$importService->importOpml($opml);
 		if ($importService->lastStatus()) {
-			FreshRSS_feed_Controller::actualizeFeed(0, '', true);
+			[, , $nb_new_articles] = FreshRSS_feed_Controller::actualizeFeeds();
+			if ($nb_new_articles > 0) {
+				FreshRSS_feed_Controller::commitNewEntries();
+			}
 			invalidateHttpCache($user);
 			exit('OK');
 		} else {
@@ -573,11 +578,7 @@ final class GReaderAPI {
 			}
 			$entry->_feed($feed);
 
-			if (isset($entryIdsTagNames['e_' . $entry->id()])) {
-				$entry->_tags($entryIdsTagNames['e_' . $entry->id()]);
-			}
-
-			$items[] = $entry->toGReader('compat');
+			$items[] = $entry->toGReader('compat', $entryIdsTagNames['e_' . $entry->id()] ?? []);
 		}
 		return $items;
 	}
@@ -585,7 +586,7 @@ final class GReaderAPI {
 	/**
 	 * @param 'A'|'c'|'f'|'s' $type
 	 * @param string|int $streamId
-	 * @return array{'A'|'c'|'f'|'s'|'t',int,int,FreshRSS_BooleanSearch}
+	 * @phpstan-return array{'A'|'c'|'f'|'s'|'t',int,int,FreshRSS_BooleanSearch}
 	 */
 	private static function streamContentsFilters(string $type, $streamId,
 		string $filter_target, string $exclude_target, int $start_time, int $stop_time): array {
@@ -967,7 +968,7 @@ final class GReaderAPI {
 				}
 			}
 		} elseif ($streamId === 'user/-/state/com.google/reading-list') {
-			$entryDAO->markReadEntries($olderThanId, false, -1);
+			$entryDAO->markReadEntries($olderThanId, false);
 		} else {
 			self::badRequest();
 		}
@@ -1069,7 +1070,7 @@ final class GReaderAPI {
 								$include_target = $pathInfos[7];
 								if ($include_target != '' && !ctype_digit($include_target)) {
 									$include_target = empty($_SERVER['REQUEST_URI']) ? '' : $_SERVER['REQUEST_URI'];
-									if (preg_match('#/reader/api/0/stream/contents/feed/([A-Za-z0-9\'!*()%$_.~+-]+)#', $include_target, $matches)) {
+									if (preg_match('#/reader/api/0/stream/contents/feed/([A-Za-z0-9\'!*()%$_.~+-]+)#', $include_target, $matches) === 1) {
 										$include_target = urldecode($matches[1]);
 									} else {
 										$include_target = '';

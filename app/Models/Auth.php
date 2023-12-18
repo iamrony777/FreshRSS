@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /**
  * This class handles all authentication process.
@@ -7,10 +8,9 @@ class FreshRSS_Auth {
 	/**
 	 * Determines if user is connected.
 	 */
-	const DEFAULT_COOKIE_DURATION = 7776000;
+	public const DEFAULT_COOKIE_DURATION = 7776000;
 
-	/** @var bool */
-	private static $login_ok = false;
+	private static bool $login_ok = false;
 
 	/**
 	 * This method initializes authentication system.
@@ -21,7 +21,7 @@ class FreshRSS_Auth {
 			self::removeAccess();
 		}
 
-		self::$login_ok = Minz_Session::param('loginOk', false);
+		self::$login_ok = Minz_Session::paramBoolean('loginOk');
 		$current_user = Minz_User::name();
 		if ($current_user === null) {
 			$current_user = FreshRSS_Context::$system_conf->default_user;
@@ -110,7 +110,7 @@ class FreshRSS_Auth {
 
 		switch (FreshRSS_Context::$system_conf->auth_type) {
 		case 'form':
-			self::$login_ok = Minz_Session::param('passwordHash') === FreshRSS_Context::$user_conf->passwordHash;
+			self::$login_ok = Minz_Session::paramString('passwordHash') === FreshRSS_Context::$user_conf->passwordHash;
 			break;
 		case 'http_auth':
 			$current_user = Minz_User::name();
@@ -213,17 +213,17 @@ class FreshRSS_Auth {
 	}
 
 	public static function csrfToken(): string {
-		$csrf = Minz_Session::param('csrf');
+		$csrf = Minz_Session::paramString('csrf');
 		if ($csrf == '') {
 			$salt = FreshRSS_Context::$system_conf->salt;
-			$csrf = sha1($salt . uniqid('' . mt_rand(), true));
+			$csrf = sha1($salt . uniqid('' . random_int(0, mt_getrandmax()), true));
 			Minz_Session::_param('csrf', $csrf);
 		}
 		return $csrf;
 	}
 
 	public static function isCsrfOk(?string $token = null): bool {
-		$csrf = Minz_Session::param('csrf');
+		$csrf = Minz_Session::paramString('csrf');
 		if ($token === null) {
 			$token = $_POST['_csrf'] ?? '';
 		}

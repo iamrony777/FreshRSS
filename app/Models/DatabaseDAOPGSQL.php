@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /**
  * This class is used to test database is well-constructed.
@@ -6,8 +7,8 @@
 class FreshRSS_DatabaseDAOPGSQL extends FreshRSS_DatabaseDAOSQLite {
 
 	//PostgreSQL error codes
-	const UNDEFINED_COLUMN = '42703';
-	const UNDEFINED_TABLE = '42P01';
+	public const UNDEFINED_COLUMN = '42703';
+	public const UNDEFINED_TABLE = '42P01';
 
 	public function tablesAreCorrect(): bool {
 		$db = FreshRSS_Context::$system_conf->db;
@@ -71,13 +72,13 @@ pg_total_relation_size('`{$this->pdo->prefix()}entrytag`')
 SQL;
 			$res = $this->fetchColumn($sql, 0);
 		}
-		return intval($res[0] ?? -1);
+		return (int)($res[0] ?? -1);
 	}
 
 
 	public function optimize(): bool {
 		$ok = true;
-		$tables = array('category', 'feed', 'entry', 'entrytmp', 'tag', 'entrytag');
+		$tables = ['category', 'feed', 'entry', 'entrytmp', 'tag', 'entrytag'];
 
 		foreach ($tables as $table) {
 			$sql = 'VACUUM `_' . $table . '`';

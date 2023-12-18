@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /**
  * The Minz_Url class handles URLs across the MINZ framework
@@ -92,7 +93,10 @@ class Minz_Url {
 			unset($url['params']['c']);
 			unset($url['params']['a']);
 			foreach ($url['params'] as $key => $param) {
-				$uri .= $separator . urlencode($key) . '=' . urlencode($param);
+				if (!is_string($key) || (!is_string($param) && !is_int($param))) {
+					continue;
+				}
+				$uri .= $separator . urlencode($key) . '=' . urlencode((string)$param);
 				$separator = $and;
 			}
 		}

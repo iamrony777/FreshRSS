@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 if (version_compare(PHP_VERSION, FRESHRSS_MIN_PHP_VERSION, '<')) {
 	die(sprintf('FreshRSS error: FreshRSS requires PHP %s+!', FRESHRSS_MIN_PHP_VERSION));
 }
@@ -116,14 +118,14 @@ function checkUrl(string $url, bool $fixScheme = true) {
 	if ($url == '') {
 		return '';
 	}
-	if ($fixScheme && !preg_match('#^https?://#i', $url)) {
+	if ($fixScheme && preg_match('#^https?://#i', $url) !== 1) {
 		$url = 'https://' . ltrim($url, '/');
 	}
 
 	$url = idn_to_puny($url);	//PHP bug #53474 IDN
 	$urlRelaxed = str_replace('_', 'z', $url);	//PHP discussion #64948 Underscore
 
-	if (filter_var($urlRelaxed, FILTER_VALIDATE_URL)) {
+	if (is_string(filter_var($urlRelaxed, FILTER_VALIDATE_URL))) {
 		return $url;
 	} else {
 		return false;
@@ -169,7 +171,7 @@ function escapeToUnicodeAlternative(string $text, bool $extended = true): string
 function format_number($n, int $precision = 0): string {
 	// number_format does not seem to be Unicode-compatible
 	return str_replace(' ', ' ',	// Thin non-breaking space
-		number_format($n, $precision, '.', ' ')
+		number_format((float)$n, $precision, '.', ' ')
 	);
 }
 
@@ -244,6 +246,7 @@ function sensitive_log($log) {
 
 /**
  * @param array<string,mixed> $attributes
+ * @throws FreshRSS_Context_Exception
  */
 function customSimplePie(array $attributes = array()): SimplePie {
 	if (FreshRSS_Context::$system_conf === null) {
@@ -258,13 +261,13 @@ function customSimplePie(array $attributes = array()): SimplePie {
 	$simplePie->set_cache_duration($limits['cache_duration']);
 	$simplePie->enable_order_by_date(false);
 
-	$feed_timeout = empty($attributes['timeout']) ? 0 : intval($attributes['timeout']);
+	$feed_timeout = empty($attributes['timeout']) ? 0 : (int)$attributes['timeout'];
 	$simplePie->set_timeout($feed_timeout > 0 ? $feed_timeout : $limits['timeout']);
 
 	$curl_options = FreshRSS_Context::$system_conf->curl_options;
 	if (isset($attributes['ssl_verify'])) {
 		$curl_options[CURLOPT_SSL_VERIFYHOST] = $attributes['ssl_verify'] ? 2 : 0;
-		$curl_options[CURLOPT_SSL_VERIFYPEER] = $attributes['ssl_verify'] ? true : false;
+		$curl_options[CURLOPT_SSL_VERIFYPEER] = (bool)$attributes['ssl_verify'];
 		if (!$attributes['ssl_verify']) {
 			$curl_options[CURLOPT_SSL_CIPHER_LIST] = 'DEFAULT@SECLEVEL=1';
 		}
@@ -329,7 +332,6 @@ function customSimplePie(array $attributes = array()): SimplePie {
 	return $simplePie;
 }
 
-/** @param string $data */
 function sanitizeHTML(string $data, string $base = '', ?int $maxLength = null): string {
 	if ($data === '' || ($maxLength !== null && $maxLength <= 0)) {
 		return '';
@@ -468,7 +470,7 @@ function httpGet(string $url, string $cachePath, string $type = 'html', array $a
 
 	if (isset($attributes['ssl_verify'])) {
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $attributes['ssl_verify'] ? 2 : 0);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $attributes['ssl_verify'] ? true : false);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, (bool)$attributes['ssl_verify']);
 		if (!$attributes['ssl_verify']) {
 			curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'DEFAULT@SECLEVEL=1');
 		}
@@ -652,21 +654,43 @@ function checkCIDR(string $ip, string $range): bool {
 }
 
 /**
- * Check if the client is allowed to send unsafe headers
- * This uses the REMOTE_ADDR header to determine the sender’s IP
- * and the configuration option "trusted_sources" to get an array of the authorized ranges
- *
+ * Use CONN_REMOTE_ADDR (if available, to be robust even when using Apache mod_remoteip) or REMOTE_ADDR environment variable to determine the connection IP.
+ */
+function connectionRemoteAddress(): string {
+	$remoteIp = $_SERVER['CONN_REMOTE_ADDR'] ?? '';
+	if ($remoteIp == '') {
+		$remoteIp = $_SERVER['REMOTE_ADDR'] ?? '';
+	}
+	if ($remoteIp == 0) {
+		$remoteIp = '';
+	}
+	return $remoteIp;
+}
+
+/**
+ * Check if the client (e.g. last proxy) is allowed to send unsafe headers.
+ * This uses the `TRUSTED_PROXY` environment variable or the `trusted_sources` configuration option to get an array of the authorized ranges,
+ * The connection IP is obtained from the `CONN_REMOTE_ADDR` (if available, to be robust even when using Apache mod_remoteip) or `REMOTE_ADDR` environment variables.
  * @return bool, true if the sender’s IP is in one of the ranges defined in the configuration, else false
  */
 function checkTrustedIP(): bool {
 	if (FreshRSS_Context::$system_conf === null) {
 		return false;
 	}
-	if (!empty($_SERVER['REMOTE_ADDR'])) {
-		foreach (FreshRSS_Context::$system_conf->trusted_sources as $cidr) {
-			if (checkCIDR($_SERVER['REMOTE_ADDR'], $cidr)) {
-				return true;
-			}
+	$remoteIp = connectionRemoteAddress();
+	if ($remoteIp === '') {
+		return false;
+	}
+	$trusted = getenv('TRUSTED_PROXY');
+	if ($trusted != 0 && is_string($trusted)) {
+		$trusted = preg_split('/\s+/', $trusted, -1, PREG_SPLIT_NO_EMPTY);
+	}
+	if (!is_array($trusted) || empty($trusted)) {
+		$trusted = FreshRSS_Context::$system_conf->trusted_sources;
+	}
+	foreach ($trusted as $cidr) {
+		if (checkCIDR($remoteIp, $cidr)) {
+			return true;
 		}
 	}
 	return false;

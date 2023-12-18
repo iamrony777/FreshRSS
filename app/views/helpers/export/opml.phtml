@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /**
  * @param array<FreshRSS_Feed> $feeds
@@ -58,6 +59,9 @@ function feedsToOutlines(array $feeds, bool $excludeMutedFeeds = false): array {
 		if ($feed->attributes('path_entries_filter') != '') {
 			$outline['frss:cssFullContentFilter'] = $feed->attributes('path_entries_filter');
 		}
+
+		// Remove null attributes
+		$outline = array_filter($outline, static function (?string $value) { return $value !== null; });
 
 		$outlines[] = $outline;
 	}

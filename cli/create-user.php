@@ -1,5 +1,7 @@
 #!/usr/bin/env php
 <?php
+declare(strict_types=1);
+
 $isUpdate = false;
 require(__DIR__ . '/_update-or-create-user.php');
 
@@ -31,7 +33,7 @@ if (!$ok) {
 if (!empty($options['api_password'])) {
 	$username = cliInitUser($username);
 	$error = FreshRSS_api_Controller::updatePassword($options['api_password']);
-	if ($error) {
+	if ($error !== false) {
 		fail($error);
 	}
 }

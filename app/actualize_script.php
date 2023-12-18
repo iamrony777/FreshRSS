@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+// declare(strict_types=1);	// Need to wait for PHP 8+ due to https://php.net/ob-implicit-flush
 require(__DIR__ . '/../cli/_cli.php');
 
 session_cache_limiter('');
@@ -12,7 +13,7 @@ $begin_date = date_create('now');
 $_GET['c'] = 'feed';
 $_GET['a'] = 'actualize';
 $_GET['ajax'] = 1;
-$_GET['force'] = true;
+$_GET['maxFeeds'] = PHP_INT_MAX;
 $_SERVER['HTTP_HOST'] = '';
 
 $app = new FreshRSS();

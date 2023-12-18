@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /**
  * An extension manager to load extensions present in CORE_EXTENSIONS_PATH and THIRDPARTY_EXTENSIONS_PATH.
@@ -6,25 +7,32 @@
  * @todo see coding style for methods!!
  */
 final class Minz_ExtensionManager {
-	/** @var string */
-	private static $ext_metaname = 'metadata.json';
-	/** @var string */
-	private static $ext_entry_point = 'extension.php';
+
+	private static string $ext_metaname = 'metadata.json';
+	private static string $ext_entry_point = 'extension.php';
 	/** @var array<string,Minz_Extension> */
-	private static $ext_list = array();
+	private static array $ext_list = [];
 	/** @var array<string,Minz_Extension> */
-	private static $ext_list_enabled = array();
+	private static array $ext_list_enabled = [];
 	/** @var array<string,bool> */
-	private static $ext_auto_enabled = array();
+	private static array $ext_auto_enabled = [];
 
 	/**
 	 * List of available hooks. Please keep this list sorted.
 	 * @var array<string,array{'list':array<callable>,'signature':'NoneToNone'|'NoneToString'|'OneToOne'|'PassArguments'}>
 	 */
-	private static $hook_list = array(
+	private static array $hook_list = [
 		'check_url_before_add' => array(	// function($url) -> Url | null
 			'list' => array(),
 			'signature' => 'OneToOne',
+		),
+		'entry_auto_read' => array(	// function(FreshRSS_Entry $entry, string $why): void
+			'list' => array(),
+			'signature' => 'PassArguments',
+		),
+		'entry_auto_unread' => array(	// function(FreshRSS_Entry $entry, string $why): void
+			'list' => array(),
+			'signature' => 'PassArguments',
 		),
 		'entry_before_display' => array(	// function($entry) -> Entry | null
 			'list' => array(),
@@ -82,7 +90,7 @@ final class Minz_ExtensionManager {
 			'list' => array(),
 			'signature' => 'PassArguments',
 		),
-	);
+	];
 
 	/** Remove extensions and hooks from a previous initialisation */
 	private static function reset(): void {
@@ -137,7 +145,7 @@ final class Minz_ExtensionManager {
 				continue;
 			}
 			$meta_raw_content = file_get_contents($metadata_filename) ?: '';
-			/** @var array{'name':string,'entrypoint':string,'path':string,'author'?:string,'description'?:string,'version'?:string,'type'?:'system'|'user'}|null */
+			/** @var array{'name':string,'entrypoint':string,'path':string,'author'?:string,'description'?:string,'version'?:string,'type'?:'system'|'user'}|null $meta_json */
 			$meta_json = json_decode($meta_raw_content, true);
 			if (!$meta_json || !self::isValidMetadata($meta_json)) {
 				// metadata.json is not a json file? Invalid!

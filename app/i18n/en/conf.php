@@ -33,9 +33,9 @@ return array(
 	'display' => array(
 		'_' => 'Display',
 		'darkMode' => array(
-			'_' => 'Automatic dark mode (beta)',	// TODO
-			'auto' => 'Auto',	// TODO
-			'no' => 'No',	// TODO
+			'_' => 'Automatic dark mode (beta)',
+			'auto' => 'Auto',
+			'no' => 'No',
 		),
 		'icon' => array(
 			'bottom_line' => 'Bottom line',
@@ -204,8 +204,9 @@ return array(
 		'read' => array(
 			'article_open_on_website' => 'when the article is opened on its original website',
 			'article_viewed' => 'when the article is viewed',
+			'focus' => 'when focused (except for important feeds)',
 			'keep_max_n_unread' => 'Max number of articles to keep unread',
-			'scroll' => 'while scrolling',
+			'scroll' => 'while scrolling (except for important feeds)',
 			'upon_gone' => 'when it is no longer in the upstream news feed',
 			'upon_reception' => 'upon receiving the article',
 			'when' => 'Mark an article as read…',

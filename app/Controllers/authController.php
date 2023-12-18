@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /**
  * This controller handles action about authentication.
@@ -61,23 +62,27 @@ class FreshRSS_auth_Controller extends FreshRSS_ActionController {
 	 *
 	 * It forwards to the correct login page (form) or main page if
 	 * the user is already connected.
+	 * @throws Minz_ConfigurationParamException
 	 */
 	public function loginAction(): void {
 		if (FreshRSS_Auth::hasAccess() && Minz_Request::paramString('u') === '') {
-			Minz_Request::forward(array('c' => 'index', 'a' => 'index'), true);
+			Minz_Request::forward(['c' => 'index', 'a' => 'index'], true);
 		}
 
 		$auth_type = FreshRSS_Context::$system_conf->auth_type;
 		FreshRSS_Context::initUser(Minz_User::INTERNAL_USER, false);
 		switch ($auth_type) {
 			case 'form':
-				Minz_Request::forward(array('c' => 'auth', 'a' => 'formLogin'));
+				Minz_Request::forward(['c' => 'auth', 'a' => 'formLogin']);
 				break;
 			case 'http_auth':
-				Minz_Error::error(403, array('error' => array(_t('feedback.access.denied'),
+				Minz_Error::error(403, [
+					'error' => [
+						_t('feedback.access.denied'),
 						' [HTTP Remote-User=' . htmlspecialchars(httpAuthUser(false), ENT_NOQUOTES, 'UTF-8') .
-						' ; Remote IP address=' . ($_SERVER['REMOTE_ADDR'] ?? '') . ']'
-					)), false);
+						' ; Remote IP address=' . connectionRemoteAddress() . ']'
+					]
+				], false);
 				break;
 			case 'none':
 				// It should not happen!
@@ -112,11 +117,11 @@ class FreshRSS_auth_Controller extends FreshRSS_ActionController {
 		$limits = FreshRSS_Context::$system_conf->limits;
 		$this->view->cookie_days = (int)round($limits['cookie_duration'] / 86400, 1);
 
-		$isPOST = Minz_Request::isPost() && !Minz_Session::param('POST_to_GET');
+		$isPOST = Minz_Request::isPost() && !Minz_Session::paramBoolean('POST_to_GET');
 		Minz_Session::_param('POST_to_GET');
 
 		if ($isPOST) {
-			$nonce = Minz_Session::param('nonce', '');
+			$nonce = Minz_Session::paramString('nonce');
 			$username = Minz_Request::paramString('username');
 			$challenge = Minz_Request::paramString('challenge');
 
@@ -200,12 +205,12 @@ class FreshRSS_auth_Controller extends FreshRSS_ActionController {
 
 				Minz_Translate::init(FreshRSS_Context::$user_conf->language);
 
-				Minz_Request::good(_t('feedback.auth.login.success'), [ 'c' => 'index', 'a' => 'index' ]);
+				Minz_Request::good(_t('feedback.auth.login.success'), ['c' => 'index', 'a' => 'index']);
 			} else {
 				Minz_Log::warning('Unsafe password mismatch for user ' . $username);
 				Minz_Request::bad(
 					_t('feedback.auth.login.invalid'),
-					array('c' => 'auth', 'a' => 'login')
+					['c' => 'auth', 'a' => 'login']
 				);
 			}
 		}
@@ -229,7 +234,7 @@ class FreshRSS_auth_Controller extends FreshRSS_ActionController {
 	 */
 	public function registerAction(): void {
 		if (FreshRSS_Auth::hasAccess()) {
-			Minz_Request::forward(array('c' => 'index', 'a' => 'index'), true);
+			Minz_Request::forward(['c' => 'index', 'a' => 'index'], true);
 		}
 
 		if (max_registrations_reached()) {
@@ -240,5 +245,16 @@ class FreshRSS_auth_Controller extends FreshRSS_ActionController {
 		$this->view->show_email_field = FreshRSS_Context::$system_conf->force_email_validation;
 		$this->view->preferred_language = Minz_Translate::getLanguage(null, Minz_Request::getPreferredLanguages(), FreshRSS_Context::$system_conf->language);
 		FreshRSS_View::prependTitle(_t('gen.auth.registration.title') . ' · ');
+	}
+
+	public static function getLogoutUrl(): string {
+		if (($_SERVER['AUTH_TYPE'] ?? '') === 'openid-connect') {
+			$url_string = urlencode(Minz_Request::guessBaseUrl());
+			return './oidc/?logout=' . $url_string . '/';
+			# The trailing slash is necessary so that we don’t redirect to http://.
+			# https://bz.apache.org/bugzilla/show_bug.cgi?id=61355#c13
+		} else {
+			return _url('auth', 'logout') ?: '';
+		}
 	}
 }
